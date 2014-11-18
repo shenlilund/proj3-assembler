@@ -210,7 +210,7 @@ int main(int argc, char* argv[])
 						*(ptr+1) = temp;
 					}
 					// register, label
-					else if (words[0] == "BNZ" || words[0] == "BGT" || words[0] == "BLT" || words[0] == "BRZ" || words[0] == "LDA" || words[0] == "STR")
+					else if (words[0] == "BNZ" || words[0] == "BGT" || words[0] == "BLT" || words[0] == "BRZ" || words[0] == "LDA")
 					{
 						int temp;
 						temp = words[1][1] - '0';
@@ -226,7 +226,7 @@ int main(int argc, char* argv[])
 							return -1;
 						}
 					}
-					else if (words[0] == "LDR" || words[0] == "LDB" || words[0] == "STB")
+					else if (words[0] == "LDR" || words[0] == "LDB" || words[0] == "STB" || words[0] == "STR")
 					{
 						//register indirect with register - register 
 						string str = words[2];
@@ -243,6 +243,10 @@ int main(int argc, char* argv[])
 							else if (words[0] == "STB")
 							{
 								*ptr = 23;
+							}
+							else if (words[0] == "STR")
+							{
+								*ptr = 21;
 							}
 							int temp;
 							temp = words[1][1] - '0';
@@ -412,6 +416,8 @@ int main(int argc, char* argv[])
 				reg[*(ptrPC+1)] = *(ptrPC+2);
 				PC+=INSTRSIZE;
 				break;
+			// case 9: //STR
+			// 	intPtr = static_cast<int*>(static_cast<void*>(ptrData+*()))
 			case 10:
 				intPtr = static_cast<int*>(static_cast<void*>(ptrData+*(ptrPC+2)));
 				reg[*(ptrPC+1)] = *(intPtr);
