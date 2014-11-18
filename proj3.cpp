@@ -59,7 +59,8 @@ int main(int argc, char* argv[])
 	instructions.push_back(".INT");
 	instructions.push_back(".BYT");
 
-	int reg[8];
+	int reg[13];
+	//8:PC, 9:SL, 10:SP, 11:FP, 12:SB
 	char mem[3000];
 
 	string line;
@@ -205,16 +206,20 @@ int main(int argc, char* argv[])
 					// register
 					else if (words[0] == "JMR")
 					{
-						int temp;
-						temp = words[1][1] - '0';
-						*(ptr+1) = temp;
+						// int temp;
+						// temp = words[1][1] - '0';
+						string tempStr = words[1].erase(0,1);
+						int tempInt = atoi(tempStr.c_str());
+						*(ptr+1) = tempInt;
 					}
 					// register, label
 					else if (words[0] == "BNZ" || words[0] == "BGT" || words[0] == "BLT" || words[0] == "BRZ" || words[0] == "LDA")
 					{
-						int temp;
-						temp = words[1][1] - '0';
-						*(ptr+1) = temp;
+						// int temp;
+						string tempStr = words[1].erase(0,1);
+						int tempInt = atoi(tempStr.c_str());
+						// temp = words[1][1] - '0';
+						*(ptr+1) = tempInt;
 
 						if (!(symbolTable.find(words[2]) == symbolTable.end()))
 						{
@@ -248,19 +253,19 @@ int main(int argc, char* argv[])
 							{
 								*ptr = 21;
 							}
-							int temp;
-							temp = words[1][1] - '0';
-							*(ptr+1) = temp;
-							int temp2;
-							temp2 = words[2][1] - '0';
-							*(ptr+2) = temp2;
+							string tempStr = words[1].erase(0,1);
+							int tempInt = atoi(tempStr.c_str());
+							*(ptr+1) = tempInt;
+							string tempStr2 = words[2].erase(0,1);
+							int tempInt2 = atoi(tempStr2.c_str());
+							*(ptr+2) = tempInt2;
 						}
 						// register - label  
 						else
 						{
-							int temp;
-							temp = words[1][1] - '0';
-							*(ptr+1) = temp;
+							string tempStr = words[1].erase(0,1);
+							int tempInt = atoi(tempStr.c_str());
+							*(ptr+1) = tempInt;
 
 							if (!(symbolTable.find(words[2]) == symbolTable.end()))
 							{
@@ -276,22 +281,22 @@ int main(int argc, char* argv[])
 					// register, register
 					else if (words[0] == "MOV" || words[0] == "ADD" || words[0] == "SUB" || words[0] == "MUL" || words[0] == "DIV" || words[0] == "AND" || words[0] == "OR" || words[0] == "CMP")
 					{
-						int temp;
-						temp = words[1][1] - '0';
-						int temp1;
-						temp1 = words[2][1] - '0';
-						*(ptr+1) = temp;
-						*(ptr+2) = temp1;
+						string tempStr = words[1].erase(0,1);
+						int tempInt = atoi(tempStr.c_str());
+						string tempStr2 = words[2].erase(0,1);
+						int tempInt2 = atoi(tempStr2.c_str());
+						*(ptr+1) = tempInt;
+						*(ptr+2) = tempInt2;
 					}
 					// register, immediate
 					else if (words[0] == "ADI")
 					{
-						int temp;
-						temp = words[1][1] - '0';
+						string tempStr = words[1].erase(0,1);
+						int tempInt = atoi(tempStr.c_str());
 						string temp1;
 						temp1 = words[2].erase(0,1);
 						int temp2 = atoi(temp1.c_str());
-						*(ptr+1) = temp;
+						*(ptr+1) = tempInt;
 						*(ptr+2) = temp2;
 					}
 					else if (words[0] == "TRP")
@@ -320,6 +325,12 @@ int main(int argc, char* argv[])
 	
 	}
 
+	//8:PC, 9:SL, 10:SP, 11:FP, 12:SB
+	reg[9] = address + dataAddress;
+	reg[10] = 2999;
+	reg[11] = 2999;
+	reg[12] = 2999;
+	// cout << reg[9] << endl;
 	// cout << mem[0] << endl;
 	// int* ptr2 = static_cast<int*>(static_cast<void*>(&mem[12]));
 	// cout << *ptr2 << endl;
