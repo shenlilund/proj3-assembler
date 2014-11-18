@@ -351,10 +351,11 @@ int main(int argc, char* argv[])
 
 	//virtual machine ----------------------------------------------------------------------------------
 	bool running = true;
-	int PC = 0;
+	// int PC = 0;
+	reg[8] = 0;
 	while (running)
 	{
-		int* ptrPC = static_cast<int*>(static_cast<void*>(&mem[PC]));
+		int* ptrPC = static_cast<int*>(static_cast<void*>(&mem[reg[8]]));
 		char* ptrData = static_cast<char*>(static_cast<void*>(&mem[beginData]));
 		int* intPtr;
 		int* intPtr2;	
@@ -372,13 +373,13 @@ int main(int argc, char* argv[])
 				else if (*(ptrPC+1) == 1)
 				{
 					cout << reg[7];
-					PC+=INSTRSIZE;
+					reg[8]+=INSTRSIZE;
 				}
 				else if (*(ptrPC+1) == 3)
 				{
 					char* charPtr = static_cast<char*>(static_cast<void*>(&reg[7]));
 					cout << *charPtr;
-					PC+=INSTRSIZE;
+					reg[8]+=INSTRSIZE;
 				}
 				else if (*(ptrPC+1) == 4)
 				{
@@ -387,98 +388,101 @@ int main(int argc, char* argv[])
 				break;
 			case 1:
 				//branch to label (JMP)
-				PC = *(ptrPC+1);
+				reg[8] = *(ptrPC+1);
+				break;
+			case 2:
+				reg[8] = reg[*(ptrPC+1)];
 				break;
 			case 4:
 				if (reg[*(ptrPC+1)] > 0)
 				{
-					PC = *(ptrPC+2);
+					reg[8] = *(ptrPC+2);
 				}
 				else
 				{
-					PC+=INSTRSIZE;
+					reg[8]+=INSTRSIZE;
 				}
 				break;
 			case 5:
 				if (reg[*(ptrPC+1)] < 0)
 				{
-					PC = *(ptrPC+2);
+					reg[8] = *(ptrPC+2);
 				}
 				else
 				{
-					PC+=INSTRSIZE;
+					reg[8]+=INSTRSIZE;
 				}
 				break;
 			case 6:
 				if (reg[*(ptrPC+1)] == 0)
 				{
-					PC = *(ptrPC+2);
+					reg[8] = *(ptrPC+2);
 				}
 				else
 				{
-					PC+=INSTRSIZE;
+					reg[8]+=INSTRSIZE;
 				}
 				break;
 			case 7:
 				reg[*(ptrPC+1)] = reg[*(ptrPC+2)];
-				PC+=INSTRSIZE;
+				reg[8]+=INSTRSIZE;
 				break;
 			case 8:
 				reg[*(ptrPC+1)] = *(ptrPC+2);
-				PC+=INSTRSIZE;
+				reg[8]+=INSTRSIZE;
 				break;
 			// case 9: //STR
 			// 	intPtr = static_cast<int*>(static_cast<void*>(ptrData+*()))
 			case 10:
 				intPtr = static_cast<int*>(static_cast<void*>(ptrData+*(ptrPC+2)));
 				reg[*(ptrPC+1)] = *(intPtr);
-				PC+=INSTRSIZE;
+				reg[8]+=INSTRSIZE;
 				break;
 			case 13:
 				reg[*(ptrPC+1)] += reg[*(ptrPC+2)];
-				PC+=INSTRSIZE;
+				reg[8]+=INSTRSIZE;
 				break;
-			case 14:
+			case 14: //ADI
 				reg[*(ptrPC+1)] += *(ptrPC+2);
-				PC+=INSTRSIZE;
+				reg[8]+=INSTRSIZE;
 				break;
-			case 15:
+			case 15: //SUB
 				reg[*(ptrPC+1)] -= reg[*(ptrPC+2)];
-				PC+=INSTRSIZE;
+				reg[8]+=INSTRSIZE;
 				break;
 			case 16:
 				reg[*(ptrPC+1)] *= reg[*(ptrPC+2)];
-				PC+=INSTRSIZE;
+				reg[8]+=INSTRSIZE;
 				break;
 			case 17:
 				reg[*(ptrPC+1)] /= reg[*(ptrPC+2)];
-				PC+=INSTRSIZE;
+				reg[8]+=INSTRSIZE;
 				break;
-			case 21:
+			case 21: //STR
 				tempInt = reg[*(ptrPC+2)];
 				intPtr = static_cast<int*>(static_cast<void*>(ptrData+tempInt));
 				intPtr2 = static_cast<int*>(static_cast<void*>(&reg[*(ptrPC+1)]));
 				*intPtr = *intPtr2;
-				PC+=INSTRSIZE;
+				reg[8]+=INSTRSIZE;
 				break;
 			case 22:
 				tempInt = reg[*(ptrPC+2)];
 				intPtr = static_cast<int*>(static_cast<void*>(ptrData+tempInt));
 				reg[*(ptrPC+1)] = *(intPtr);				 
-				PC+=INSTRSIZE;
+				reg[8]+=INSTRSIZE;
 				break;
-			case 23:
+			case 23: //STB
 				tempInt = reg[*(ptrPC+2)];
 				charPtr = static_cast<char*>(static_cast<void*>(ptrData+tempInt));
 				charPtr2 = static_cast<char*>(static_cast<void*>(&reg[*(ptrPC+1)]));
 				*charPtr = *charPtr2;
-				PC+=INSTRSIZE;
+				reg[8]+=INSTRSIZE;
 				break;
 			case 24:
 				tempInt = reg[*(ptrPC+2)];
 				charPtr = static_cast<char*>(static_cast<void*>(ptrData+tempInt));
 				reg[*(ptrPC+1)] = *(charPtr);				 
-				PC+=INSTRSIZE;
+				reg[8]+=INSTRSIZE;
 				break;
 		}
 	}
